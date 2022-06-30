@@ -28,7 +28,7 @@ import lombok.ToString;
 public class BoardVO {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO) //번호 자동생성기
 	private Long bno;
 	
 	@NonNull

@@ -1,5 +1,6 @@
 package com.kosta.myapp;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -7,6 +8,11 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import com.kosta.myapp.repository.BoardRepository;
 import com.kosta.myapp.vo.BoardVO;
@@ -18,6 +24,98 @@ public class BoardTest {
 	BoardRepository boardRepo;
 	
 	@Test
+	public void jpqlTest1() {
+		List<BoardVO> blist;
+		
+		//blist = boardRepo.selectAllByTitle("5",50L);
+		//blist = boardRepo.selectAllByTitle2("5",50L);
+		//blist = boardRepo.selectAllByTitle3("5",50L);	
+		//blist = boardRepo.selectAllByTitle4("5",50L);
+		blist = boardRepo.selectAllByTitle5("5",50L);
+		
+		blist.forEach(board->{
+			System.out.println(board);
+		});;
+	}
+	
+	//@Test
+	public void test21() {
+		Timestamp s = Timestamp.valueOf("2022-06-30 00:00:00.000");
+		Timestamp e = Timestamp.valueOf("2022-06-31 00:00:00.000");
+		Pageable paging = PageRequest.of(3, 10, Sort.by(Direction.DESC, "writer", "regDate")); //page는 0부터 시작, 1 page의 건수는 10으로 설정
+		
+		Page<BoardVO> result = boardRepo.findByRegDateBetween(s,e, paging);
+		System.out.println(result.getNumber());
+		System.out.println(result.getTotalElements()); //전체건수
+		System.out.println(result.getTotalPages()); //전체 페이지 수
+		System.out.println(result.getNumberOfElements()); //한 페이지의 건 수
+		
+		List<BoardVO> blist = result.getContent();
+		blist.forEach(board->{
+			System.out.println(board);
+		});
+	}	
+	
+	//@Test
+	public void test20() {
+		Timestamp s = Timestamp.valueOf("2022-06-30 00:00:00.000");
+		Timestamp e = Timestamp.valueOf("2022-06-31 00:00:00.000");
+		Pageable paging = PageRequest.of(3, 10, Sort.by(Direction.DESC, "writer", "regDate")); //page는 0부터 시작, 1 page의 건수는 10으로 설정
+		
+		boardRepo.findByRegDateBetweenOrderByBnoDesc(s,e, paging).forEach(board->{
+			System.out.println(board);
+		});;
+	}	
+	
+	//@Test
+	public void test19() {
+		Timestamp s = Timestamp.valueOf("2022-06-30 09:22:31.655");
+		Timestamp e = Timestamp.valueOf("2022-06-30 09:22:31.816");
+		
+		boardRepo.findByRegDateGreaterThanEqualAndRegDateLessThanEqual(s,e).forEach(board->{
+			System.out.println(board);
+		});;
+	}	
+	
+	//@Test
+	public void test18() {
+		Timestamp s = Timestamp.valueOf("2022-06-30 09:22:31.655");
+		Timestamp e = Timestamp.valueOf("2022-06-30 09:22:31.816");
+		
+		boardRepo.findByRegDateBetween(s,e).forEach(board->{
+			System.out.println(board);
+		});;
+	}	
+	
+	//@Test
+	public void test17() {
+		boardRepo.findByTitleEndingWith("9").forEach(board->{
+			System.out.println(board);
+		});;
+	}	
+	
+	//@Test
+	public void test16() {
+		boardRepo.findByBnoLessThanEqual(10L).forEach(board->{
+			System.out.println(board);
+		});;
+	}	
+	
+	//@Test
+	public void test15() {
+		boardRepo.findByWriterContainingOrTitleContaining("Jeoung", "9").forEach(board->{
+			System.out.println(board);
+		});;
+	}	
+	
+	//@Test
+	public void test14() {
+		boardRepo.findByBnoGreaterThanEqualOrderByBnoDesc(90L).forEach(board->{
+			System.out.println(board);
+		});;
+	}	
+	
+	//@Test
 	public void test13() {
 		boardRepo.findByBnoGreaterThan(90L).forEach(board->{
 			System.out.println(board);
@@ -132,11 +230,11 @@ public class BoardTest {
 	
 	//@Test
 	public void test1() {
-		IntStream.rangeClosed(1, 100).forEach(i->{
+		IntStream.rangeClosed(1, 10).forEach(i->{
 			BoardVO board = BoardVO.builder()
-									.title("제목"+i)
-									.content("내용"+i)
-									.writer("Hong")
+									.title("목요알"+i)
+									.content("비가온다"+i)
+									.writer("Jeoung")
 									.build();
 			boardRepo.save(board); //insert
 		});
