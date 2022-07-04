@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>게시판 목록</h1>
+<table>
+<tr>
+	<td>순서</td>
+	<td>번호</td>
+	<td>제목</td>
+	<td>내용</td>
+	<td>작성자</td>
+	<td>작성일</td>
+	<td>수정일</td>
+	<td>냇글수</td>
+</tr>
+<tr th:each="board, rowStatus:${boardList}">
+	<td th:text="${rowStatus.count}">순서</td>
+	<td th:text="${board.bno}">번호</td>
+	<td th:text="${board.title}">제목</td>
+	<td th:text="${board.content}">내용</td>
+	<td th:text="${board.writer}">작성자</td>
+	<td th:text="${board.regdate}">작성일</td>
+	<td th:text="${board.updatedate}">수정일</td>
+	<td th:text="${board.replies.size()}">냇글수</td>
+</tr>
+</table>
+</body>
+</html>

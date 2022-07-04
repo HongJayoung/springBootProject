@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+.firstline{
+	background-color: lightyellow;
+}
+
+.lastline{
+	background-color: lightgreen;
+}
+</style>
+
+<script th:inline="javascript">
+var blist = [[${boardList}]]; //jackson...json data로 온다
+blist.map(item=>{console.log(item.title)});
+
+</script>
+</head>
+<body>
+<h1>타임리프 연습...boardList가져오기</h1>
+<p>지역변수 선언...[[${loginUser}]]</p>
+
+<p>[[${#response.characterEncoding}]]</p>
+<p th:text="${@environment.getProperty('server.port')}"></p>
+<p th:text="${@environment.getProperty('app.title')}"></p>
+<p th:text="${session.loginUser3}"></p>
+<p th:text="${param.param1}"></p>
+<p>[[${#request.getParameter('param2')}]]</p>
+<p th:if="${not #lists.isEmpty(boardList)}">값이 있다.</p>
+<p th:text="${#numbers.formatDecimal(salary,3,'COMMA',2,'POINT')}"></p>
+
+<hr>
+<table th:with="loginUser=${loginUser}, loginUser2=${loginUser2}">
+<tr>
+	<td>index</td>
+	<td>count</td>
+	<td>짝-홀</td>
+	<td>first-last</td>
+	<td>번호</td>
+	<td>제목</td>
+	<td>내용</td>
+	<td>작성자</td>
+	<td>작성일</td>
+	<td>수정일</td>
+	<td>댓글</td>
+</tr>
+
+<tr th:each="board,rowStatus:${boardList}"
+	th:class="${rowStatus.first?'firstline':''}"
+	th:classappend="${rowStatus.last or rowStatus.count==5?'lastline':''}"
+>
+	<td th:text="${rowStatus.index}"></td>
+	<td th:text="${rowStatus.count}"></td>
+	<td th:text="|${rowStatus.odd}-${rowStatus.even}|"></td>
+	<td th:text="${rowStatus.first+'-'+rowStatus.last}"></td>
+	<td>[[${board.bno}]]</td>
+	<td>[[${board.title}]]....[[${#strings.contains(board.title,"목")}]]</td>
+	<td>[[${board.content}]]</td>
+	<td>
+		[[${board.writer}]]
+		<span th:if="${board.writer==loginUser2}">
+			<button>수정</button>
+		</span>
+		<span th:unless="${board.writer==loginUser2}">
+			<button>보기</button>
+		</span>
+	</td>
+	<td>[[${#dates.format(board.regdate, 'yyyy-MM-dd')}]]</td>
+	<td th:text="${#dates.format(board.updatedate, 'yyyy-MM-dd')}"></td>
+	<td th:text="${board.replies.size()}"></td>
+</tr>
+
+</table>
+</body>
+</html>

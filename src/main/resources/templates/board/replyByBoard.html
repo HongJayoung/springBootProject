@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+table, td, tr {
+	border: 1px solid gray;
+	border-collapse: collapse;
+	padding :10px;
+	text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>상세보기</h1>
+
+<table>
+<tr>
+	<td>번호</td>
+	<td>제목</td>
+	<td>내용</td>
+	<td>작성자</td>
+	<td>작성일</td>
+	<td>수정일</td>
+	<td>냇글수</td>
+</tr>
+<tr>
+	<td th:text="${board.bno}">번호</td>
+	<td th:text="${board.title}">제목</td>
+	<td th:text="${board.content}">내용</td>
+	<td th:text="${board.writer}">작성자</td>
+	<td th:text="${board.regdate}">작성일</td>
+	<td th:text="${board.updatedate}">수정일</td>
+	<td th:text="${board.replies.size()}">냇글수</td>
+</tr>
+</table>
+
+<hr>
+
+<h3>댓글 목록</h3>
+<table>
+<tr>
+	<td>순서</td>
+	<td>번호</td>
+	<td>댓글</td>
+	<td>댓글작성자</td>
+	<td>댓글작성일</td>
+	<td>댓글수정일</td>
+</tr>
+<tr th:each="reply, rowStatus:${replyList}">
+	<td th:text="${rowStatus.count}">순서</td>
+	<td th:text="${reply.rno}">번호</td>
+	<td th:text="${reply.replyText}">댓글</td>
+	<td th:text="${reply.replyer}">댓글작성자</td>
+	<td th:text="${reply.regdate}">댓글작성일</td>
+	<td th:text="${reply.updatedate}">댓글수정일</td>
+</tr>
+</table>
+</body>
+</html>

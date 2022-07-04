@@ -16,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,31 +23,32 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(exclude = "board") //양방향일때 무한loop주의
-@EqualsAndHashCode(of="rno")
+@ToString (exclude ="board")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="tbl_free_replies")
-public class FreeBoardReply{
-    @Id
+@Table(name = "tbl_webreplies")
+public class WebReply {
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)//oracle:sequence, mysql:identity
 	Long rno;
 	
-    String reply;
+	String replyText;
 	
-    String replyer;
+	String replyer;
 	
-    @CreationTimestamp
-	Timestamp regdate;
+	@CreationTimestamp
+	private Timestamp regdate;//yyyy-MM-dd hh:mm:ss
 	
-    @UpdateTimestamp
-	Timestamp updatedate;
-    
-    //jackson에 의해 json이 만들어질 때
-    
-    @JsonIgnore //board->replies->... 무한 loop
-    @ManyToOne
-    FreeBoard board; //board_bno
+	@UpdateTimestamp  //생성시 생성일자, 수정시 변경된다. 
+	private Timestamp updatedate;
+	
+	@JsonIgnore
+	//@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@ManyToOne//(fetch = FetchType.LAZY) //lazy로 변경해도 OneToMany에서 Lazy가 그대로 수행~
+	//@JoinColumn(name="board_bno")
+	WebBoard board;
+	//@ManyToOne, @OneToOne과 같이 @XXXToOne 어노테이션들은 기본이 즉시 로딩(EAGER) 이다.
+ 
 }
