@@ -22,13 +22,13 @@ public interface WebBoardRepository
 		if (type == null)
 			return builder;
 		switch (type) {
-		case "t":
+		case "title":
 			builder.and(board.title.like("%" + keyword + "%")); //and title like '%'?'%'
 			break;
-		case "c":
+		case "content":
 			builder.and(board.content.like("%" + keyword + "%"));
 			break;
-		case "w":
+		case "writer":
 			builder.and(board.writer.like("%" + keyword + "%"));
 			break;
 		default:
