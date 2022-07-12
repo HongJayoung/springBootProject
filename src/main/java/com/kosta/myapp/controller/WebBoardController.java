@@ -1,5 +1,9 @@
 package com.kosta.myapp.controller;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.kosta.myapp.repository.WebBoardRepository;
 import com.kosta.myapp.repository.WebReplyRepository;
@@ -28,21 +34,25 @@ public class WebBoardController {
 	WebReplyRepository rRepo;
 	
 	@PostMapping("/delete.go")
-	public String deletePost(WebBoard board) {
+	public String deletePost(PageVO pageVO,WebBoard board, RedirectAttributes attr) {
 		bRepo.deleteById(board.getBno());
 		
+		attr.addFlashAttribute("msg", "DELETE SECCESS!");
+		attr.addFlashAttribute("pageVO", pageVO);
 		return "redirect:/board/webBoardList.go";
 	}
 	
 	@PostMapping("/modify.go")
-	public String modifyPost(@ModelAttribute PageVO pageVO, WebBoard board) {
+	public String modifyPost(@ModelAttribute PageVO pageVO, WebBoard board, RedirectAttributes attr) {
 		bRepo.findById(board.getBno()).ifPresentOrElse(b->{
 			b.setContent(board.getContent());
 			b.setTitle(board.getTitle());
 			
-			bRepo.save(b);
+			WebBoard result = bRepo.save(b);
+			attr.addFlashAttribute("msg", result!=null?"UPDATE SECCESS!":"UPDATE FAIL!");
 		}, ()->{System.out.println("[알림] XXXXX");});
 		
+		attr.addFlashAttribute("pageVO", pageVO);
 		return "redirect:/board/webBoardList.go";
 	}
 	
@@ -52,8 +62,9 @@ public class WebBoardController {
 	}
 	
 	@PostMapping("/register.go")
-	public String registerPost(WebBoard board) {
-		bRepo.save(board);
+	public String registerPost(WebBoard board, RedirectAttributes attr) {
+		WebBoard result = bRepo.save(board);
+		attr.addFlashAttribute("msg", result!=null?"INSERT SECCESS!":"INSERT FAIL!");
 		
 		return "redirect:/board/webBoardList.go";
 	}
@@ -71,7 +82,16 @@ public class WebBoardController {
 	}
 	
 	@GetMapping("/webBoardList.go")
-	public String boardList(@ModelAttribute PageVO pageVO, Model model) {
+	public String boardList(@ModelAttribute PageVO pageVO, Model model, HttpServletRequest request) {
+		Map<String, Object> map = (Map<String, Object>) RequestContextUtils.getInputFlashMap(request);
+		if(map != null) {
+			String msg = (String)map.get("msg");
+			//pageVO = (PageVO) map.get("pageVO");
+			
+			model.addAttribute("msg", msg);
+		}
+		//if(pageVO == null) pageVO = new PageVO();
+		
 		Pageable page = pageVO.makePaging(0, "bno"); //bno로 desc sort
 		Predicate predicate =  bRepo.makePredicate(pageVO.getType(), pageVO.getKeyword());
 		
@@ -80,11 +100,6 @@ public class WebBoardController {
 		PageMaker<WebBoard> pgmaker = new PageMaker<>(blist);
 		model.addAttribute("boardList", pgmaker);
 		//model.addAttribute("pageVO", pageVO);
-		
-//		System.out.println(blist.getNumber());
-//		System.out.println(blist.getSize());
-//		System.out.println(blist.getTotalPages());
-//		System.out.println(blist.getContent());
 
 		return "board/boardList";
 	}

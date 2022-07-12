@@ -37,7 +37,138 @@
    				keyword=${pageVO.keyword},bno=${board.bno})}">Go List</a>
 		</div>
 	</div>
-</div>
+	
+	<div>
+   		<button data-toggle="modal" data-target="#myModal" class="btn btn-warning" id="addReply">댓글추가</button>
+	</div>
+	
+	<table class="table table-striped table-bordered  table-hover">
+		<thead>
+		    <tr>
+		    	<th>댓글번호</th>
+		    	<th>내용</th>
+		    	<th>작성자</th>
+		    </tr>
+	    </thead>
+	    
+	    <tbody id="replyTable" data-toggle="modal" data-target="#myModal">
+	    	<!-- 데이터가 뿌려짐 -->
+	    </tbody>
+	</table>
+	
+	<!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+		<div class="model_dialog">
+	        <!-- Modal content -->
+	        <div class="modal-content">
+	        	<div class="modal-header">
+	            	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	           		<h4 class="modal-title">modal-title</h4>
+	       		</div>
+	        
+		        <div class="modal-body">
+					<label>rno</label> 
+					<input type="text" name="rno"class="form-control" readonly="readonly">
+					
+		        	<label>ReplyText</label>
+		        	<input type="text" name="replyText" class="form-control">
+		        	
+		         	<label>Replyer</label>
+		        	<input type="text" name="replyer" class="form-control">
+		        </div>
+			
+				<div class="modal-footer">
+			    	<button id = "modalSaveBtn" class="btn btn-info">Save</button>
+			    	<button id = "modalDelBtn" class="btn btn-info">Delete</button>
+			    	<button type="button" class="btn btn-default"   data-dismiss="modal" >Close</button>
+	        	</div>
+	        </div>
+    	</div>
+    </div> <!-- 모달끝 --> 
+</div> <!-- content끝 -->
+
+<th:block layout:fragment="script1">
+	<script th:inline="javascript" th:src="@{'/js/reply.js'}"></script>
+	<script th:inline="javascript">
+	
+	replyManager.getAll("[[${board.bno}]]", printList);
+	function printList(rList) {
+		var str = "";
+		$.each(rList, function(idx, item) {
+			str += "<tr>";
+			str += "<td>" + item["rno"] + "</td>";
+			str += "<td>" + item["replyText"] + "</td>";
+			str += "<td>" + item["replyer"] + "</td>";
+			str += "</tr>";
+		});
+		
+		$("#replyTable").html(str);
+	}
+	
+	var mode = "";
+	var rno = $("input[name='rno']");
+	var replyText = $("input[name='replyText']");
+	var replyer = $("input[name='replyer']");
+
+	//댓글 입력창
+	$("#addReply").click(function() {
+		mode = "ADD"; //mode 변경
+		//alert("add클릭");
+		rno.val("");replyer.val("");replyer.val(""); //모달 내용 지우기
+		$("#myModal").show();
+		$(".modal-title").text("NEW REPLY");
+	});
+
+	$("#replyTable").on("click", "tr", function() {
+		mode = "MOD"; //mode 변경
+		var tds = $(this).find("td");
+		var no = tds[0].innerHTML;
+		var reply = tds[1].innerHTML;
+		var replyer = tds[2].innerHTML;
+		
+		$("input[name='rno']").val(no);
+		$("input[name='replyText']").val(reply);
+		$("input[name='replyer']").val(replyer);
+		$("#myModal").show();
+		$(".modal-title").text("REPLY");
+	});
+
+	//수정 & 입력
+	$("#modalSaveBtn").click(function() {
+		var obj = {
+			"bno" : /*[[${board.bno}]]*/'a',
+			"replyText" : replyText.val(),
+			"replyer" : replyer.val()
+		};
+		
+		if (mode == "ADD") {
+			replyManager.add(obj, printList);
+			alert("입력완료");
+		} else if (mode == "MOD") {
+			obj["rno"] = rno.val();
+			replyManager.update(obj, printList);
+			alert("수정완료");
+		}
+		
+		rno.val("");replyText.val("");replyer.val("");
+		$("#myModal").modal("hide");
+	});
+	
+	//삭제
+	$("#modalDelBtn").click(function() {
+		var obj = {
+				"bno" : /*[[${board.bno}]]*/'a',
+				"rno" : rno.val()
+			};
+		
+		replyManager.remove(obj, printList);
+		alert("삭제완료");
+		rno.val("");replyText.val("");replyer.val("");
+		$("#myModal").modal("hide");
+	});
+
+	</script>
+</th:block>
 
 </body>
 </html>
