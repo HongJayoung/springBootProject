@@ -114,12 +114,15 @@
 	$("#addReply").click(function() {
 		mode = "ADD"; //mode 변경
 		//alert("add클릭");
-		rno.val("");replyer.val("");replyer.val(""); //모달 내용 지우기
+		rno.val("");replyText.val("");replyer.val(""); //모달 내용 지우기
 		$("#myModal").show();
 		$(".modal-title").text("NEW REPLY");
+		$("#modalDelBtn").attr("disabled","disabled");
 	});
 
+	//댓글 상세보기
 	$("#replyTable").on("click", "tr", function() {
+		$("#modalDelBtn").removeAttr("disabled");
 		mode = "MOD"; //mode 변경
 		var tds = $(this).find("td");
 		var no = tds[0].innerHTML;

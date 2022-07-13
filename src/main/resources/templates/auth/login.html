@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="layout/layout1">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	login
+	<div class="panel panel-default" layout:fragment="content">
+		<div class="panel-body">
+			<h2>CUSTOM LOGIN PAGE</h2>
+			<!-- 
+			<div th:if="${param.error != null}">
+			    <h2>아이디와 비밀번호 틀림</h2>
+			    <h2 th:value="${param.error}"></h2>
+			</div>
+			<div th:if="${param.logout!= null}">
+			    <h2>로그아웃됨</h2>    
+			</div>
+			 -->
+
+			<form method="post">
+				<p>
+					<label for="username">Username</label>
+					<input type="text" id="username" name="username" value="ja0" />
+					<!-- 이름변경불가  : username -->
+				</p>
+				<p>
+					<label for="password">Password</label> 
+					<input type="password" id="password" name="password" value="1234" />
+					<!-- 이름변경불가  : password -->
+				</p>
+
+			   	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> 
+				<button type="submit" class="btn btn-primary">Log in</button>
+
+			</form>
+			<!-- <div class="btn btn-naver">
+				<a href="/myapp/oauth2/authorization/naver" role="button"> 
+					<img class="img-responsive" th:src="@{/images/icon/btnW_완성형.png}">
+				</a>
+			</div>
+			<div class="btn btn-google">
+				<a href="/myapp/oauth2/authorization/google" role="button">
+					<img class="img-responsive" th:src="@{/images/icon/btn_google.png}">
+				</a>
+			</div> -->
+		</div>
+		<img th:src="@{/images/heart_after.png}" width="200px" height="200px">
+	</div>
+
+</body>
+</html>

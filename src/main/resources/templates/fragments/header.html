@@ -1,8 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <div th:fragment="header1">
-	Header!!!!!!
+	<form class="form-inline my-2 my-lg-0" method="post"th:action="@{/logout}">
+	   	<div sec:authorize="hasRole('USER')">USER 권한을 가지고있으면 이 부분이 보임.</div>
+	   	<div sec:authorize="hasRole('ADMIN')">ADMIN 권한을 가지고있으면 이 부분이 보임.</div>
+	   	<div sec:authorize="hasRole('MANAGER')">MANAGER 권한을 가지고있으면 이 부분이 보임.</div>
+	  	<span sec:authorize="isAuthenticated()">
+		   <span sec:authentication="name"></span>
+		   <span sec:authentication="principal.authorities"></span>
+		   <button class="btn btn-primary"type="submit">Logout</button>
+		</span> 
+		<!-- <button sec:authorize="isAnonymous()" th:href="@{/auth/login}" class="btn btn-primary" type="submit">
+			Login
+		</button> -->
+	</form>
+
 </div>
 
 <div th:fragment="header2">
