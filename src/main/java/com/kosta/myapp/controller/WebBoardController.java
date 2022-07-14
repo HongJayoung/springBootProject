@@ -93,17 +93,17 @@ public class WebBoardController {
 	
 //	@GetMapping("/webboard/boardlist")    
 //	public void selectAll(Model model, Principal principal, Authentication authentication ) {
-//	System.out.println(“방법1:" + principal);
-//	UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//	System.out.println(＂방법2:" + userDetails);
-//
-//	Object principal2 = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
-//	UserDetails userDetails2 = (UserDetails)principal2; 
-//	System.out.println(＂방법3:" + userDetails2);
-//
-//	String mid = principal.getName();
-//	UserDetails userDetails3 =mservice.loadUserByUsername(mid);
-//	System.out.println(＂방법4:" +userDetails3);
+//		System.out.println(“방법1:" + principal);
+//		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//		System.out.println(＂방법2:" + userDetails);
+//	
+//		Object principal2 = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+//		UserDetails userDetails2 = (UserDetails)principal2; 
+//		System.out.println(＂방법3:" + userDetails2);
+//	
+//		String mid = principal.getName();
+//		UserDetails userDetails3 =mservice.loadUserByUsername(mid);
+//		System.out.println(＂방법4:" +userDetails3);
 //	}
 
 	@GetMapping("/webBoardList.go")
